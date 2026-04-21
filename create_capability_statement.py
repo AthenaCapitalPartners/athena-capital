@@ -251,7 +251,7 @@ def create_capability_statement():
     contacts = [
         ("WEB",      "athenacapitalnv.com",        margin),
         ("EMAIL",    "janani@athenacapitalnv.com",  margin + 145),
-        ("PHONE",    "(702) 301-9535",              margin + 320),
+        ("PHONE",    "(702) 908-6592",              margin + 320),
         ("LOCATION", "Las Vegas, Nevada",           margin + 450),
     ]
 
