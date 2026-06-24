@@ -777,15 +777,89 @@
     .toast-danger  { background: var(--coral); }
     .toast-info    { background: var(--gray-900); }
 
+    /* ── Owner PIN modal ── */
+    .pin-box {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 18px 0 6px;
+    }
+    .pin-input {
+      width: 52px; height: 52px;
+      border: 2px solid var(--gray-200);
+      border-radius: 10px;
+      text-align: center;
+      font-size: 22px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      color: var(--gray-900);
+      outline: none;
+      transition: border-color var(--trans), box-shadow var(--trans);
+      -webkit-text-security: disc;
+    }
+    .pin-input:focus { border-color: var(--teal); box-shadow: 0 0 0 4px rgba(26,140,116,.1); }
+    .pin-input.pin-err { border-color: var(--coral); animation: shake .3s ease; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+    .pin-hint { font-size: 12px; color: var(--gray-400); font-weight: 600; text-align: center; margin-bottom: 4px; }
+    .pin-err-msg { font-size: 12.5px; color: var(--coral); font-weight: 700; text-align: center; min-height: 18px; }
+
+    /* ── Admin bar ── */
+    .admin-bar {
+      display: none;
+      background: var(--navy);
+      padding: 10px 24px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .admin-bar.visible { display: flex; }
+    .admin-bar-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .admin-bar-label svg { width: 14px; height: 14px; }
+    .admin-exit {
+      padding: 5px 14px;
+      border-radius: 99px;
+      border: 1px solid rgba(255,255,255,.2);
+      background: none;
+      color: rgba(255,255,255,.65);
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--trans);
+    }
+    .admin-exit:hover { background: rgba(255,255,255,.1); color: var(--white); }
+
     /* ───── FOOTER ───── */
     .dd-footer {
       background: var(--navy);
       padding: 20px 24px;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
     }
     .dd-footer p { font-size: 12px; color: rgba(255,255,255,.4); font-weight: 600; }
-    .dd-footer a { color: rgba(255,255,255,.55); text-decoration: none; }
+    .dd-footer a { color: rgba(255,255,255,.4); text-decoration: none; transition: color var(--trans); }
     .dd-footer a:hover { color: var(--amber); }
+    .owner-access-link {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255,255,255,.22) !important;
+      letter-spacing: .5px;
+      cursor: pointer;
+    }
+    .owner-access-link:hover { color: rgba(255,255,255,.5) !important; }
 
     /* ───── RESPONSIVE ───── */
     @media(max-width:680px){
@@ -812,6 +886,15 @@
 </head>
 <body>
 
+  <!-- ── Admin bar (owner only) ── -->
+  <div class="admin-bar" id="admin-bar">
+    <div class="admin-bar-label">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Owner Dashboard
+    </div>
+    <button class="admin-exit" onclick="exitAdmin()">Exit Admin View</button>
+  </div>
+
   <!-- ── Navbar ── -->
   <nav class="dd-nav">
     <a href="index.html" class="dd-nav-brand">
@@ -821,8 +904,7 @@
       <div class="dd-nav-sub">🐾 doggie den</div>
     </a>
     <div class="dd-nav-actions">
-      <button class="dd-nav-btn dd-nav-btn-outline" onclick="switchTabById('dashboard')">Dashboard</button>
-      <button class="dd-nav-btn dd-nav-btn-primary" onclick="switchTabById('new')">+ New Request</button>
+      <button class="dd-nav-btn dd-nav-btn-primary" onclick="scrollToApp()">Book a Stay</button>
     </div>
   </nav>
 
@@ -842,13 +924,9 @@
       <h1>Where Pets Feel<br><em>At Home</em></h1>
       <p class="dd-hero-tagline">Premium boarding with 24/7 care, personalized attention, and a safe environment your furry family members will love.</p>
       <div class="dd-hero-cta">
-        <button class="btn-hero-primary" onclick="scrollToApp();switchTabById('new')">
+        <button class="btn-hero-primary" onclick="scrollToApp()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Book a Stay
-        </button>
-        <button class="btn-hero-secondary" onclick="scrollToApp();switchTabById('dashboard')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          View Dashboard
         </button>
       </div>
       <div class="dd-hero-trust">
@@ -912,19 +990,20 @@
   <div class="dd-app" id="app-section">
     <div class="dd-app-inner">
 
-      <div class="dd-tabs" id="dd-tabs">
-        <button class="dd-tab active" onclick="switchTab('dashboard',this)">
+      <!-- Owner tabs (hidden until PIN unlocked) -->
+      <div class="dd-tabs" id="dd-tabs" style="display:none">
+        <button class="dd-tab" onclick="switchTab('dashboard',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
           Dashboard
         </button>
-        <button class="dd-tab" onclick="switchTab('new',this)">
+        <button class="dd-tab active" onclick="switchTab('new',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           New Request
         </button>
       </div>
 
-      <!-- Dashboard page -->
-      <div class="dd-page active" id="page-dashboard">
+      <!-- Dashboard page (owner only) -->
+      <div class="dd-page" id="page-dashboard">
         <div class="stats-grid" id="stats-grid"></div>
 
         <div class="shd">
@@ -955,14 +1034,10 @@
         </div>
       </div>
 
-      <!-- New Request page -->
-      <div class="dd-page" id="page-new">
+      <!-- New Request page (customer default) -->
+      <div class="dd-page active" id="page-new">
         <div class="shd" style="margin-bottom:20px">
-          <h2>New Boarding Request</h2>
-          <button class="abtn abtn-outline" onclick="switchTabById('dashboard')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            Back
-          </button>
+          <h2>Book a Stay</h2>
         </div>
         <div class="form-shell">
           <div class="form-hero-strip">
@@ -1118,9 +1193,36 @@
 
   <div id="dd-toasts"></div>
 
+  <!-- ── PIN Modal ── -->
+  <div class="modal-overlay" id="modal-pin">
+    <div class="modal">
+      <div class="modal-hd">
+        <div class="modal-title">🔐 Owner Access</div>
+        <button class="modal-close" onclick="closeModal('modal-pin')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-bd">
+        <p class="pin-hint">Enter your 4-digit PIN to access the owner dashboard</p>
+        <div class="pin-box">
+          <input class="pin-input" id="pin1" type="password" maxlength="1" inputmode="numeric" pattern="[0-9]" oninput="pinNext(this,'pin2')" onkeydown="pinBack(event,this,null)">
+          <input class="pin-input" id="pin2" type="password" maxlength="1" inputmode="numeric" pattern="[0-9]" oninput="pinNext(this,'pin3')" onkeydown="pinBack(event,this,'pin1')">
+          <input class="pin-input" id="pin3" type="password" maxlength="1" inputmode="numeric" pattern="[0-9]" oninput="pinNext(this,'pin4')" onkeydown="pinBack(event,this,'pin2')">
+          <input class="pin-input" id="pin4" type="password" maxlength="1" inputmode="numeric" pattern="[0-9]" oninput="pinNext(this,null)"   onkeydown="pinBack(event,this,'pin3')">
+        </div>
+        <p class="pin-err-msg" id="pin-err"></p>
+      </div>
+      <div class="modal-ft">
+        <button class="btn-modal-cancel" onclick="closeModal('modal-pin')">Cancel</button>
+        <button class="btn-submit" style="padding:9px 24px" onclick="checkPin()">Unlock</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Footer ── -->
   <footer class="dd-footer">
     <p>&copy; 2026 Athena Capital Partners LLC — Doggie Den &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy</a></p>
+    <a class="owner-access-link" onclick="openPinModal()">Owner Access</a>
   </footer>
 
   <script>
@@ -1128,11 +1230,63 @@
     let requests = JSON.parse(localStorage.getItem('doggieden_v2') || '[]');
     let cancelId = null;
     let activeFilter = 'all';
+    let isOwner = false;
+    const OWNER_PIN = '1234'; // change this to your preferred PIN
 
     function save() { localStorage.setItem('doggieden_v2', JSON.stringify(requests)); }
     function nextId() {
       const max = requests.reduce((m,r) => Math.max(m, parseInt(r.id.replace('DD',''))), 0);
       return 'DD' + String(max+1).padStart(4,'0');
+    }
+
+    // ── PIN Auth ──
+    function openPinModal() {
+      ['pin1','pin2','pin3','pin4'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('pin-err').textContent = '';
+      ['pin1','pin2','pin3','pin4'].forEach(id => document.getElementById(id).classList.remove('pin-err'));
+      document.getElementById('modal-pin').classList.add('open');
+      setTimeout(() => document.getElementById('pin1').focus(), 100);
+    }
+    function pinNext(el, nextId) {
+      if(el.value.length === 1 && nextId) document.getElementById(nextId).focus();
+      if(!nextId) checkPin();
+    }
+    function pinBack(e, el, prevId) {
+      if(e.key === 'Backspace' && el.value === '' && prevId) document.getElementById(prevId).focus();
+      if(e.key === 'Enter') checkPin();
+    }
+    function checkPin() {
+      const entered = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join('');
+      if(entered === OWNER_PIN) {
+        closeModal('modal-pin');
+        unlockOwner();
+      } else {
+        ['pin1','pin2','pin3','pin4'].forEach(id => {
+          const el = document.getElementById(id);
+          el.classList.add('pin-err');
+          setTimeout(() => el.classList.remove('pin-err'), 400);
+          el.value = '';
+        });
+        document.getElementById('pin-err').textContent = 'Incorrect PIN. Please try again.';
+        document.getElementById('pin1').focus();
+      }
+    }
+    function unlockOwner() {
+      isOwner = true;
+      document.getElementById('admin-bar').classList.add('visible');
+      document.getElementById('dd-tabs').style.display = 'flex';
+      switchTab('dashboard', document.querySelector('.dd-tab'));
+      renderDashboard();
+      document.getElementById('app-section').scrollIntoView({behavior:'smooth'});
+      toast('Welcome back, Owner! 🔓', 'success');
+    }
+    function exitAdmin() {
+      isOwner = false;
+      document.getElementById('admin-bar').classList.remove('visible');
+      document.getElementById('dd-tabs').style.display = 'none';
+      document.querySelectorAll('.dd-page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-new').classList.add('active');
+      toast('Switched to customer view', 'info');
     }
 
     // ── Routing ──
