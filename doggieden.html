@@ -753,17 +753,7 @@
               <span class="form-error" id="e-endTime"></span>
             </div>
           </div>
-          <div class="form-grid" style="margin-top:14px">
-            <div class="form-group">
-              <label class="form-label">Service Type</label>
-              <select class="form-select" id="f-service">
-                <option value="">Select a service</option>
-                <option value="Standard Boarding">Standard Boarding</option>
-                <option value="Luxury Suite">Luxury Suite</option>
-                <option value="Day Care Only">Day Care Only</option>
-                <option value="Overnight Stay">Overnight Stay</option>
-              </select>
-            </div>
+          <div class="form-grid cols-1" style="margin-top:14px">
             <div class="form-group">
               <label class="form-label">Number of Pets</label>
               <select class="form-select" id="f-numPets">
@@ -970,7 +960,6 @@
               <div class="req-meta-label">Check-out</div>
               <div class="req-meta-value">${fmtDate(r.endDate)}<br><span style="color:var(--gray-400);font-size:12px">${fmt12(r.endTime)}</span></div>
             </div>
-            ${r.serviceType ? `<div class="req-meta-item"><div class="req-meta-label">Service</div><div class="req-meta-value">${esc(r.serviceType)}</div></div>` : ''}
             ${r.breed ? `<div class="req-meta-item"><div class="req-meta-label">Breed</div><div class="req-meta-value">${esc(r.breed)}</div></div>` : ''}
           </div>
           <div class="req-card-actions">
@@ -1031,7 +1020,6 @@
         petName: v('petName'), breed: v('breed'), age: v('age'),
         startDate: v('startDate'), startTime: v('startTime'),
         endDate: v('endDate'), endTime: v('endTime'),
-        serviceType: v('service') || 'Standard Boarding',
         numPets: v('numPets'),
         instructions: v('instructions'),
         emergencyContact: v('emergency'),
@@ -1050,7 +1038,6 @@
       ['ownerName','phone','email','petName','breed','age','startDate','startTime','endDate','endTime','instructions','emergency','vet'].forEach(id=>{
         const el = document.getElementById('f-'+id); if(el){el.value='';el.classList.remove('err');}
       });
-      document.getElementById('f-service').value='';
       document.getElementById('f-numPets').value='1';
       ['ownerName','phone','petName','startDate','startTime','endDate','endTime'].forEach(id=>{
         const e=document.getElementById('e-'+id); if(e) e.textContent='';
@@ -1085,7 +1072,6 @@
           <div class="detail-item"><div class="dk">Email</div><div class="dv">${esc(r.email)||'—'}</div></div>
           <div class="detail-item"><div class="dk">Pet / Breed</div><div class="dv">${esc(r.petName)}${r.breed?' · '+esc(r.breed):''}</div></div>
           <div class="detail-item"><div class="dk">Age</div><div class="dv">${esc(r.age)||'—'}</div></div>
-          <div class="detail-item"><div class="dk">Service</div><div class="dv">${esc(r.serviceType)}</div></div>
           <div class="detail-item"><div class="dk">Check-in</div><div class="dv">${r.startDate} ${fmt12(r.startTime)}</div></div>
           <div class="detail-item"><div class="dk">Check-out</div><div class="dv">${r.endDate} ${fmt12(r.endTime)}</div></div>
           <div class="detail-item"><div class="dk">Emergency</div><div class="dv">${esc(r.emergencyContact)||'—'}</div></div>
