@@ -587,21 +587,13 @@
   <!-- ── Navigation ── -->
   <nav class="navbar" id="navbar">
     <div class="container nav-container">
-      <a href="index.html" class="logo">
-        <span class="logo-mark">ATHENA</span>
-        <span class="logo-text">Capital Partners</span>
+      <a href="index.html" class="logo" style="flex-direction:column;align-items:flex-start;line-height:1;gap:3px">
+        <span style="display:flex;align-items:center;gap:6px">
+          <span class="logo-mark">ATHENA</span>
+          <span class="logo-text">Capital Partners</span>
+        </span>
+        <span style="font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);padding-left:1px">doggie den</span>
       </a>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="index.html#about">About Us</a></li>
-        <li><a href="index.html#services">Services</a></li>
-        <li><a href="index.html#capabilities">Capabilities</a></li>
-        <li><a href="doggieden.html" class="active">Doggie Den</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
-      </ul>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-        <span></span><span></span><span></span>
-      </button>
     </div>
   </nav>
 
@@ -828,43 +820,11 @@
   <div id="dd-toasts"></div>
 
   <!-- ── Footer ── -->
-  <footer class="footer">
+  <footer class="footer" style="padding:24px 0">
     <div class="container">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <a href="index.html" class="logo">
-            <span class="logo-mark">ATHENA</span>
-            <span class="logo-text">Capital Partners</span>
-          </a>
-          <p>Professional services for federal agencies. Small business. Big capability. Las Vegas, NV.</p>
-        </div>
-        <div class="footer-links">
-          <div class="footer-col">
-            <h4>Company</h4>
-            <a href="index.html#about">About Us</a>
-            <a href="index.html#services">Services</a>
-            <a href="index.html#capabilities">How We Work</a>
-            <a href="index.html#contact">Contact</a>
-          </div>
-          <div class="footer-col">
-            <h4>Services</h4>
-            <a href="index.html#services">Administrative Support</a>
-            <a href="index.html#services">Writing &amp; Translation</a>
-            <a href="index.html#services">Graphic Design</a>
-            <a href="index.html#services">IT &amp; Office Supplies</a>
-          </div>
-          <div class="footer-col">
-            <h4>Resources</h4>
-            <a href="doggieden.html">Doggie Den</a>
-            <a href="#">Capability Statement</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="#" id="footerCookieSettings">Cookie Settings</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Athena Capital Partners LLC. All rights reserved.</p>
-        <p class="disclaimer">Athena Capital Partners LLC is a registered limited liability company in the State of Nevada.</p>
+      <div class="footer-bottom" style="border:none;padding:0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <p style="margin:0">&copy; 2026 Athena Capital Partners LLC &mdash; Doggie Den. All rights reserved.</p>
+        <a href="privacy.html" style="font-size:12px;color:var(--gray-400)">Privacy Policy</a>
       </div>
     </div>
   </footer>
