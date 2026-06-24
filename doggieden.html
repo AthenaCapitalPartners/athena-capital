@@ -3,102 +3,588 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com; form-action https://formsubmit.co; frame-src 'self'; frame-ancestors 'none';">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <title>Doggie Den — Pet Boarding | Athena Capital Partners LLC</title>
+  <meta name="description" content="Premium pet boarding in Las Vegas. Submit boarding requests, manage check-ins and check-outs, and track your pet's stay with Doggie Den.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .doggie-hero {
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Design tokens ── */
+    :root {
+      --navy:        #0A192F;
+      --navy-light:  #112240;
+      --navy-mid:    #1A2A4A;
+      --gold:        #C5A059;
+      --gold-light:  #D4B76A;
+      --gold-dark:   #A8882E;
+      --gold-muted:  rgba(197,160,89,.15);
+      --white:       #FFFFFF;
+      --off-white:   #F8F7F4;
+      --cream:       #FAF9F6;
+      --gray-100:    #F0EDE8;
+      --gray-200:    #E0DCD5;
+      --gray-300:    #C4BFB6;
+      --gray-400:    #8A8578;
+      --gray-500:    #6B665C;
+      --text:        #1A1A1B;
+      --text-light:  #6B665C;
+      --success:     #059669;
+      --success-bg:  #D1FAE5;
+      --danger:      #DC2626;
+      --danger-bg:   #FEE2E2;
+      --warning:     #D97706;
+      --warning-bg:  #FEF3C7;
+      --radius:      12px;
+      --radius-sm:   8px;
+      --shadow:      0 1px 4px rgba(0,0,0,.08);
+      --shadow-md:   0 4px 16px rgba(0,0,0,.10);
+      --shadow-lg:   0 12px 40px rgba(0,0,0,.13);
+      --trans:       0.25s cubic-bezier(.4,0,.2,1);
+    }
+
+    body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--off-white); -webkit-font-smoothing: antialiased; }
+
+    /* ── Hero ── */
+    .dd-hero {
       background: var(--navy);
-      padding: 120px 0 48px;
+      padding: 130px 24px 64px;
       text-align: center;
       position: relative;
       overflow: hidden;
     }
-    .doggie-hero::before {
+    .dd-hero::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 60% 40%, rgba(197,160,89,.12) 0%, transparent 70%);
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(197,160,89,.18) 0%, transparent 70%);
+      top: -200px; right: -150px;
       pointer-events: none;
     }
-    .doggie-hero .hero-tag {
+    .dd-hero::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(197,160,89,.10) 0%, transparent 70%);
+      bottom: -150px; left: -100px;
+      pointer-events: none;
+    }
+    .dd-hero-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+    .dd-paw-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px; height: 72px;
+      background: var(--gold-muted);
+      border: 1.5px solid rgba(197,160,89,.35);
+      border-radius: 50%;
+      margin-bottom: 24px;
+      font-size: 32px;
+    }
+    .dd-hero-tag {
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 2.5px;
+      font-weight: 700;
+      letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--gold);
       margin-bottom: 16px;
     }
-    .doggie-hero h1 {
+    .dd-hero h1 {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-size: clamp(2.2rem, 6vw, 3.6rem);
       font-weight: 600;
       color: var(--white);
-      margin-bottom: 16px;
-      line-height: 1.2;
+      line-height: 1.15;
+      margin-bottom: 18px;
     }
-    .doggie-hero p {
+    .dd-hero h1 em { font-style: normal; color: var(--gold); }
+    .dd-hero p {
       font-size: 16px;
-      color: rgba(255,255,255,.65);
-      max-width: 520px;
-      margin: 0 auto;
-      line-height: 1.7;
+      line-height: 1.75;
+      color: rgba(255,255,255,.62);
+      margin-bottom: 36px;
     }
-    .doggie-paw {
-      font-size: 28px;
-      margin-bottom: 12px;
-      display: block;
+    .dd-hero-badges {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .dd-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      border: 1px solid rgba(197,160,89,.35);
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,.75);
+      background: rgba(197,160,89,.08);
+    }
+    .dd-badge svg { width: 13px; height: 13px; color: var(--gold); }
+
+    /* ── Tabs ── */
+    .dd-tabs-bar {
+      background: var(--navy-light);
+      border-bottom: 1px solid rgba(197,160,89,.15);
+      position: sticky;
+      top: 60px;
+      z-index: 90;
+    }
+    .dd-tabs-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 0;
+    }
+    .dd-tab {
+      padding: 16px 20px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,.45);
+      letter-spacing: .4px;
+      border-bottom: 2px solid transparent;
+      transition: all var(--trans);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .dd-tab svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .dd-tab:hover { color: rgba(255,255,255,.75); }
+    .dd-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* ── Main wrap ── */
+    .dd-main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
     }
 
-    .boarding-frame-section {
-      background: #f4f3f0;
-      padding: 0 0 60px;
+    /* ── Pages ── */
+    .dd-page { display: none; }
+    .dd-page.active { display: block; }
+
+    /* ── Stats ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
     }
-    .boarding-frame-wrap {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 24px;
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 20px 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: box-shadow var(--trans);
     }
-    .boarding-iframe {
-      width: 100%;
-      height: 100vh;
-      min-height: 700px;
+    .stat-card:hover { box-shadow: var(--shadow-md); }
+    .stat-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-400); }
+    .stat-value { font-size: 32px; font-weight: 700; line-height: 1; }
+    .stat-card.s-total   .stat-value { color: var(--navy); }
+    .stat-card.s-pending .stat-value { color: var(--warning); }
+    .stat-card.s-active  .stat-value { color: #4f46e5; }
+    .stat-card.s-done    .stat-value { color: var(--success); }
+    .stat-card.s-cancel  .stat-value { color: var(--danger); }
+
+    /* ── Filter pills ── */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .filter-pill {
+      padding: 5px 14px;
+      border-radius: 99px;
+      border: 1.5px solid var(--gray-200);
+      background: var(--white);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: all var(--trans);
+    }
+    .filter-pill:hover { border-color: var(--gold); color: var(--gold-dark); }
+    .filter-pill.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+
+    /* ── Request cards (mobile-first) ── */
+    .requests-list { display: flex; flex-direction: column; gap: 14px; }
+    .req-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: box-shadow var(--trans), transform var(--trans);
+    }
+    .req-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .req-card-top {
+      padding: 16px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .req-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .req-info { flex: 1; min-width: 0; }
+    .req-name { font-weight: 700; font-size: 15px; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .req-owner { font-size: 12.5px; color: var(--gray-400); margin-top: 2px; }
+    .req-id { font-size: 11px; font-weight: 600; color: var(--gray-300); font-family: monospace; }
+    .req-badge { flex-shrink: 0; }
+
+    .req-card-meta {
+      padding: 0 18px 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .req-meta-item { }
+    .req-meta-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-400); margin-bottom: 2px; }
+    .req-meta-value { font-size: 13px; color: var(--text); font-weight: 500; }
+
+    .req-card-actions {
+      padding: 12px 18px;
+      border-top: 1px solid var(--gray-100);
+      background: var(--cream);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+    .badge-pending   { background: var(--warning-bg);  color: var(--warning); }
+    .badge-pending::before   { background: var(--warning); }
+    .badge-active    { background: #EEF2FF; color: #4f46e5; }
+    .badge-active::before    { background: #4f46e5; }
+    .badge-completed { background: var(--success-bg); color: var(--success); }
+    .badge-completed::before { background: var(--success); }
+    .badge-cancelled { background: var(--danger-bg);  color: var(--danger); }
+    .badge-cancelled::before { background: var(--danger); }
+
+    /* ── Buttons ── */
+    .btn-xs {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 6px;
       border: none;
-      border-radius: 0 0 12px 12px;
-      display: block;
-      background: #fff;
-      box-shadow: 0 8px 40px rgba(10,25,47,.10);
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      transition: all var(--trans);
     }
-    .frame-header {
+    .btn-xs svg { width: 13px; height: 13px; }
+    .btn-navy    { background: var(--navy); color: var(--white); }
+    .btn-navy:hover { background: var(--navy-mid); }
+    .btn-gold    { background: var(--gold); color: var(--navy); }
+    .btn-gold:hover { background: var(--gold-dark); color: var(--white); }
+    .btn-outline-dark {
+      background: var(--white);
+      color: var(--gray-600, #4b5563);
+      border: 1.5px solid var(--gray-200);
+    }
+    .btn-outline-dark:hover { border-color: var(--gray-300); background: var(--gray-100); }
+    .btn-danger  { background: var(--danger); color: var(--white); }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn-success { background: var(--success); color: var(--white); }
+    .btn-success:hover { background: #047857; }
+
+    /* ── CTA new request button ── */
+    .dd-new-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
       background: var(--gold);
-      border-radius: 12px 12px 0 0;
-      padding: 12px 24px;
+      color: var(--navy);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--trans);
+      letter-spacing: .3px;
+    }
+    .dd-new-btn:hover { background: var(--gold-dark); color: var(--white); box-shadow: 0 4px 14px rgba(197,160,89,.35); }
+    .dd-new-btn svg { width: 16px; height: 16px; }
+
+    /* ── Section header ── */
+    .section-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .section-hd h2 { font-size: 17px; font-weight: 700; color: var(--navy); }
+
+    /* ── Empty state ── */
+    .empty-state {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 2px dashed var(--gray-200);
+      padding: 52px 20px;
+      text-align: center;
+      color: var(--gray-400);
+    }
+    .empty-state svg { width: 52px; height: 52px; margin-bottom: 14px; opacity: .35; }
+    .empty-state p { font-size: 14px; margin-bottom: 18px; }
+
+    /* ── Form ── */
+    .form-wrap {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .form-section {
+      padding: 24px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .form-section:last-of-type { border-bottom: none; }
+    .form-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--gold-dark);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gold-muted);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .form-grid.cols-1 { grid-template-columns: 1fr; }
+    .form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 600px) {
+      .form-grid, .form-grid.cols-3 { grid-template-columns: 1fr; }
+    }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .form-label .req { color: var(--danger); }
+    .form-input, .form-select, .form-textarea {
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: 10px 13px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color var(--trans), box-shadow var(--trans);
+      outline: none;
+      width: 100%;
+      -webkit-appearance: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(197,160,89,.15);
+    }
+    .form-input.err, .form-select.err, .form-textarea.err {
+      border-color: var(--danger);
+    }
+    .form-error { font-size: 11.5px; color: var(--danger); margin-top: 2px; }
+    .form-textarea { min-height: 90px; resize: vertical; }
+    .form-actions {
+      padding: 20px 24px;
+      background: var(--cream);
+      border-top: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn-lg {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all var(--trans);
+    }
+    .btn-lg-primary { background: var(--navy); color: var(--white); }
+    .btn-lg-primary:hover { background: var(--navy-mid); box-shadow: 0 4px 14px rgba(10,25,47,.25); }
+    .btn-lg-outline {
+      background: var(--white);
+      color: var(--gray-500);
+      border: 1.5px solid var(--gray-200);
+    }
+    .btn-lg-outline:hover { border-color: var(--gray-300); background: var(--gray-100); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,25,47,.55);
+      z-index: 800;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(3px);
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white);
+      border-radius: 16px;
+      width: min(480px, 100%);
+      box-shadow: var(--shadow-lg);
+      animation: popUp .2s ease;
+      overflow: hidden;
+    }
+    @keyframes popUp {
+      from { transform: scale(.94) translateY(10px); opacity: 0; }
+      to   { transform: scale(1)   translateY(0);    opacity: 1; }
+    }
+    .modal-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .modal-title { font-size: 17px; font-weight: 700; color: var(--navy); }
+    .modal-body  { padding: 18px 24px; font-size: 14px; color: var(--gray-500); line-height: 1.65; }
+    .modal-footer {
+      padding: 14px 24px 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 20px;
+    }
+    @media (max-width: 480px) { .detail-grid { grid-template-columns: 1fr; } }
+    .detail-item .dk { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--gray-400); }
+    .detail-item .dv { font-size: 13.5px; color: var(--text); margin-top: 3px; font-weight: 500; }
+    .detail-instructions {
+      margin-top: 14px;
+      background: var(--off-white);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 13.5px;
+      color: var(--gray-500);
+      line-height: 1.65;
+    }
+    .detail-instructions .dk { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--gray-400); margin-bottom: 6px; }
+
+    /* ── Toast ── */
+    #dd-toasts {
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-    .frame-header span {
-      font-size: 13px;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13.5px;
       font-weight: 600;
-      color: var(--navy);
-      letter-spacing: .3px;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp .25s ease;
+      max-width: 320px;
+      color: var(--white);
     }
-    .frame-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(10,25,47,.25);
+    @keyframes slideUp {
+      from { transform: translateY(16px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .toast-success { background: var(--success); }
+    .toast-danger  { background: var(--danger); }
+    .toast-info    { background: var(--navy); }
+
+    /* ── Mobile tweaks ── */
+    @media (max-width: 640px) {
+      .dd-hero { padding: 110px 20px 48px; }
+      .dd-tabs-inner { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .dd-tab { padding: 14px 14px; font-size: 12px; }
+      .dd-main { padding: 22px 14px 48px; }
+      .stats-row { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .stat-value { font-size: 26px; }
+      .req-card-meta { grid-template-columns: 1fr; }
+      .section-hd { flex-direction: column; align-items: flex-start; }
+      .modal-footer { flex-direction: column-reverse; }
+      .modal-footer .btn-lg { width: 100%; justify-content: center; }
+      #dd-toasts { left: 14px; right: 14px; }
+      .toast { max-width: 100%; }
+    }
+    @media (max-width: 400px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigation -->
+  <!-- ── Navigation ── -->
   <nav class="navbar" id="navbar">
     <div class="container nav-container">
       <a href="index.html" class="logo">
@@ -114,42 +600,244 @@
         <li><a href="index.html#contact">Contact</a></li>
       </ul>
       <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="doggie-hero">
-    <div class="container">
-      <span class="doggie-paw">🐾</span>
-      <p class="hero-tag">Pet Boarding &bull; Las Vegas, NV</p>
-      <h1>Doggie Den</h1>
-      <p>Premium pet boarding with the care and attention your furry family members deserve. Submit a boarding request below — check-in, check-out, and full care instructions all in one place.</p>
-    </div>
-  </section>
-
-  <!-- Embedded Boarding App -->
-  <section class="boarding-frame-section">
-    <div class="boarding-frame-wrap">
-      <div class="frame-header">
-        <div class="frame-dot"></div>
-        <div class="frame-dot"></div>
-        <div class="frame-dot"></div>
-        <span>BoardingHub — Pet Boarding Requests</span>
+  <!-- ── Hero ── -->
+  <section class="dd-hero">
+    <div class="dd-hero-inner">
+      <div class="dd-paw-icon">🐾</div>
+      <p class="dd-hero-tag">Pet Boarding &bull; Las Vegas, NV</p>
+      <h1>Welcome to<br><em>Doggie Den</em></h1>
+      <p>Premium boarding with the care your pets deserve. Submit a request, track check-ins, and manage stays — all in one place.</p>
+      <div class="dd-hero-badges">
+        <span class="dd-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Safe &amp; Secure
+        </span>
+        <span class="dd-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          24 / 7 Care
+        </span>
+        <span class="dd-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Loved Like Family
+        </span>
       </div>
-      <iframe
-        src="boarding-app.html"
-        class="boarding-iframe"
-        title="Doggie Den Boarding Request System"
-        loading="lazy"
-      ></iframe>
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- ── Tab Bar ── -->
+  <div class="dd-tabs-bar">
+    <div class="dd-tabs-inner">
+      <button class="dd-tab active" onclick="switchTab('dashboard', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <button class="dd-tab" onclick="switchTab('new', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Request
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Main Content ── -->
+  <div class="dd-main">
+
+    <!-- Dashboard -->
+    <div class="dd-page active" id="page-dashboard">
+      <div class="stats-row" id="stats-row"></div>
+
+      <div class="section-hd">
+        <h2>Boarding Requests</h2>
+        <button class="dd-new-btn" onclick="switchTabById('new')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Request
+        </button>
+      </div>
+
+      <div class="filter-row" id="filter-row">
+        <button class="filter-pill active" onclick="setFilter('all',this)">All</button>
+        <button class="filter-pill" onclick="setFilter('pending',this)">Pending</button>
+        <button class="filter-pill" onclick="setFilter('active',this)">Active</button>
+        <button class="filter-pill" onclick="setFilter('completed',this)">Completed</button>
+        <button class="filter-pill" onclick="setFilter('cancelled',this)">Cancelled</button>
+      </div>
+
+      <div class="requests-list" id="requests-list"></div>
+      <div class="empty-state" id="empty-state" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <p>No boarding requests found.</p>
+        <button class="dd-new-btn" onclick="switchTabById('new')" style="margin:0 auto">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Create First Request
+        </button>
+      </div>
+    </div>
+
+    <!-- New Request Form -->
+    <div class="dd-page" id="page-new">
+      <div class="section-hd" style="margin-bottom:20px">
+        <h2>New Boarding Request</h2>
+        <button class="btn-xs btn-outline-dark" onclick="switchTabById('dashboard')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back
+        </button>
+      </div>
+      <div class="form-wrap">
+
+        <div class="form-section">
+          <div class="form-section-label">Owner Information</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Owner Name <span class="req">*</span></label>
+              <input class="form-input" id="f-ownerName" type="text" placeholder="Jane Smith" />
+              <span class="form-error" id="e-ownerName"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone <span class="req">*</span></label>
+              <input class="form-input" id="f-phone" type="tel" placeholder="(555) 000-0000" />
+              <span class="form-error" id="e-phone"></span>
+            </div>
+          </div>
+          <div class="form-grid cols-1" style="margin-top:14px">
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-input" id="f-email" type="email" placeholder="jane@example.com" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-label">Pet Information</div>
+          <div class="form-grid cols-3">
+            <div class="form-group">
+              <label class="form-label">Pet Name <span class="req">*</span></label>
+              <input class="form-input" id="f-petName" type="text" placeholder="Buddy" />
+              <span class="form-error" id="e-petName"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Breed / Species</label>
+              <input class="form-input" id="f-breed" type="text" placeholder="Golden Retriever" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Age</label>
+              <input class="form-input" id="f-age" type="text" placeholder="3 years" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-label">Boarding Schedule</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Check-in Date <span class="req">*</span></label>
+              <input class="form-input" id="f-startDate" type="date" />
+              <span class="form-error" id="e-startDate"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Check-in Time <span class="req">*</span></label>
+              <input class="form-input" id="f-startTime" type="time" />
+              <span class="form-error" id="e-startTime"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Check-out Date <span class="req">*</span></label>
+              <input class="form-input" id="f-endDate" type="date" />
+              <span class="form-error" id="e-endDate"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Check-out Time <span class="req">*</span></label>
+              <input class="form-input" id="f-endTime" type="time" />
+              <span class="form-error" id="e-endTime"></span>
+            </div>
+          </div>
+          <div class="form-grid" style="margin-top:14px">
+            <div class="form-group">
+              <label class="form-label">Service Type</label>
+              <select class="form-select" id="f-service">
+                <option value="">Select a service</option>
+                <option value="Standard Boarding">Standard Boarding</option>
+                <option value="Luxury Suite">Luxury Suite</option>
+                <option value="Day Care Only">Day Care Only</option>
+                <option value="Overnight Stay">Overnight Stay</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Number of Pets</label>
+              <select class="form-select" id="f-numPets">
+                <option value="1">1 Pet</option>
+                <option value="2">2 Pets</option>
+                <option value="3">3 Pets</option>
+                <option value="4+">4+ Pets</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-label">Care Instructions</div>
+          <div class="form-grid cols-1">
+            <div class="form-group">
+              <label class="form-label">Special Instructions</label>
+              <textarea class="form-textarea" id="f-instructions" placeholder="Feeding schedule, medications, allergies, behavioral notes…"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Emergency Contact</label>
+              <input class="form-input" id="f-emergency" type="text" placeholder="Name and phone number" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Veterinarian</label>
+              <input class="form-input" id="f-vet" type="text" placeholder="Clinic name and phone number" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-lg btn-lg-outline" onclick="clearForm()">Clear</button>
+          <button class="btn-lg btn-lg-primary" onclick="submitRequest()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Submit Request
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /dd-main -->
+
+  <!-- ── Cancel Modal ── -->
+  <div class="modal-overlay" id="modal-cancel">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Cancel Boarding Request</div>
+      </div>
+      <div class="modal-body" id="modal-cancel-body">Are you sure you want to cancel this request?</div>
+      <div class="modal-footer">
+        <button class="btn-lg btn-lg-outline" onclick="closeModal('modal-cancel')">Keep It</button>
+        <button class="btn-lg btn-danger" onclick="confirmCancel()">Yes, Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Detail Modal ── -->
+  <div class="modal-overlay" id="modal-detail">
+    <div class="modal" style="width:min(560px,100%)">
+      <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between">
+        <div class="modal-title" id="modal-detail-title"></div>
+        <span id="modal-detail-badge"></span>
+      </div>
+      <div class="modal-body" id="modal-detail-body"></div>
+      <div class="modal-footer">
+        <button class="btn-lg btn-lg-outline" onclick="closeModal('modal-detail')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toasts ── -->
+  <div id="dd-toasts"></div>
+
+  <!-- ── Footer ── -->
   <footer class="footer">
     <div class="container">
       <div class="footer-top">
@@ -171,9 +859,9 @@
           <div class="footer-col">
             <h4>Services</h4>
             <a href="index.html#services">Administrative Support</a>
-            <a href="index.html#services">Writing & Translation</a>
+            <a href="index.html#services">Writing &amp; Translation</a>
             <a href="index.html#services">Graphic Design</a>
-            <a href="index.html#services">IT & Office Supplies</a>
+            <a href="index.html#services">IT &amp; Office Supplies</a>
           </div>
           <div class="footer-col">
             <h4>Resources</h4>
@@ -186,15 +874,15 @@
       </div>
       <div class="footer-bottom">
         <p>&copy; 2026 Athena Capital Partners LLC. All rights reserved.</p>
-        <p class="disclaimer">Athena Capital Partners LLC is a registered limited liability company in the State of Nevada. Registered on SAM.gov for federal procurement.</p>
+        <p class="disclaimer">Athena Capital Partners LLC is a registered limited liability company in the State of Nevada.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Cookie Consent Banner -->
+  <!-- ── Cookie Banner ── -->
   <div class="cookie-banner" id="cookieBanner">
     <div class="cookie-banner-inner">
-      <p>We use cookies to analyze website traffic and improve your experience. No personally identifiable information is collected. <a href="privacy.html">Privacy Policy</a></p>
+      <p>We use cookies to improve your experience. <a href="privacy.html">Privacy Policy</a></p>
       <div class="cookie-banner-actions">
         <button class="cookie-btn cookie-btn-decline" id="cookieDecline">Decline</button>
         <button class="cookie-btn cookie-btn-accept" id="cookieAccept">Accept</button>
@@ -204,16 +892,250 @@
 
   <script src="script.js"></script>
   <script>
-    // Resize iframe to fit its content
-    const iframe = document.querySelector('.boarding-iframe');
-    function resizeIframe() {
-      try {
-        const h = iframe.contentWindow.document.body.scrollHeight;
-        if (h > 600) iframe.style.height = h + 'px';
-      } catch(e) {}
+    // ── State ──
+    let requests = JSON.parse(localStorage.getItem('doggieden_requests') || '[]');
+    let cancelId = null;
+    let activeFilter = 'all';
+
+    function save() { localStorage.setItem('doggieden_requests', JSON.stringify(requests)); }
+
+    function nextId() {
+      const max = requests.reduce((m,r) => Math.max(m, parseInt(r.id.replace('DD',''))), 0);
+      return 'DD' + String(max + 1).padStart(4, '0');
     }
-    iframe.addEventListener('load', resizeIframe);
-    window.addEventListener('resize', resizeIframe);
+
+    // ── Tabs ──
+    function switchTab(name, btn) {
+      document.querySelectorAll('.dd-page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.dd-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('page-' + name).classList.add('active');
+      btn.classList.add('active');
+      if (name === 'dashboard') renderDashboard();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function switchTabById(name) {
+      const btn = document.querySelector(`.dd-tab[onclick*="'${name}'"]`);
+      if (btn) switchTab(name, btn);
+    }
+
+    // ── Filter ──
+    function setFilter(f, btn) {
+      activeFilter = f;
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      renderList();
+    }
+
+    // ── Render ──
+    function renderDashboard() { renderStats(); renderList(); }
+
+    function renderStats() {
+      const t = requests.length;
+      const p = requests.filter(r=>r.status==='pending').length;
+      const a = requests.filter(r=>r.status==='active').length;
+      const d = requests.filter(r=>r.status==='completed').length;
+      const c = requests.filter(r=>r.status==='cancelled').length;
+      document.getElementById('stats-row').innerHTML = `
+        <div class="stat-card s-total"><div class="stat-label">Total</div><div class="stat-value">${t}</div></div>
+        <div class="stat-card s-pending"><div class="stat-label">Pending</div><div class="stat-value">${p}</div></div>
+        <div class="stat-card s-active"><div class="stat-label">Active</div><div class="stat-value">${a}</div></div>
+        <div class="stat-card s-done"><div class="stat-label">Done</div><div class="stat-value">${d}</div></div>
+        <div class="stat-card s-cancel"><div class="stat-label">Cancelled</div><div class="stat-value">${c}</div></div>
+      `;
+    }
+
+    function renderList() {
+      const filtered = (activeFilter === 'all' ? requests : requests.filter(r=>r.status===activeFilter)).slice().reverse();
+      const list = document.getElementById('requests-list');
+      const empty = document.getElementById('empty-state');
+      if (!filtered.length) { list.innerHTML=''; empty.style.display=''; return; }
+      empty.style.display = 'none';
+      list.innerHTML = filtered.map(r => `
+        <div class="req-card">
+          <div class="req-card-top">
+            <div class="req-avatar">${petEmoji(r.breed)}</div>
+            <div class="req-info">
+              <div class="req-name">${esc(r.petName)}</div>
+              <div class="req-owner">${esc(r.ownerName)} &middot; ${esc(r.phone)}</div>
+              <div class="req-id">${r.id}</div>
+            </div>
+            <div class="req-badge"><span class="badge badge-${r.status}">${cap(r.status)}</span></div>
+          </div>
+          <div class="req-card-meta">
+            <div class="req-meta-item">
+              <div class="req-meta-label">Check-in</div>
+              <div class="req-meta-value">${fmtDate(r.startDate)}<br><span style="color:var(--gray-400);font-size:12px">${fmt12(r.startTime)}</span></div>
+            </div>
+            <div class="req-meta-item">
+              <div class="req-meta-label">Check-out</div>
+              <div class="req-meta-value">${fmtDate(r.endDate)}<br><span style="color:var(--gray-400);font-size:12px">${fmt12(r.endTime)}</span></div>
+            </div>
+            ${r.serviceType ? `<div class="req-meta-item"><div class="req-meta-label">Service</div><div class="req-meta-value">${esc(r.serviceType)}</div></div>` : ''}
+            ${r.breed ? `<div class="req-meta-item"><div class="req-meta-label">Breed</div><div class="req-meta-value">${esc(r.breed)}</div></div>` : ''}
+          </div>
+          <div class="req-card-actions">
+            <button class="btn-xs btn-navy" onclick="viewDetail('${r.id}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              View
+            </button>
+            ${r.status==='pending' ? `<button class="btn-xs btn-success" onclick="setStatus('${r.id}','active')">Activate</button>` : ''}
+            ${r.status==='active'  ? `<button class="btn-xs btn-success" onclick="setStatus('${r.id}','completed')">Complete</button>` : ''}
+            ${r.status!=='cancelled'&&r.status!=='completed' ? `<button class="btn-xs btn-danger" onclick="openCancel('${r.id}')">Cancel</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function petEmoji(breed) {
+      if (!breed) return '🐾';
+      const b = breed.toLowerCase();
+      if (b.includes('cat')||b.includes('kitten')||b.includes('siamese')||b.includes('persian')||b.includes('tabby')) return '🐱';
+      if (b.includes('rabbit')||b.includes('bunny')) return '🐰';
+      if (b.includes('bird')||b.includes('parrot')||b.includes('cockatiel')) return '🐦';
+      if (b.includes('fish')) return '🐠';
+      if (b.includes('hamster')||b.includes('guinea')) return '🐹';
+      return '🐶';
+    }
+
+    // ── Form ──
+    function validate() {
+      const req = ['ownerName','phone','petName','startDate','startTime','endDate','endTime'];
+      let ok = true;
+      req.forEach(f => {
+        document.getElementById('f-'+f).classList.remove('err');
+        document.getElementById('e-'+f).textContent = '';
+      });
+      const v = id => document.getElementById('f-'+id).value.trim();
+      const fail = (id,msg) => { document.getElementById('f-'+id).classList.add('err'); document.getElementById('e-'+id).textContent=msg; ok=false; };
+      if (!v('ownerName')) fail('ownerName','Required');
+      if (!v('phone'))     fail('phone','Required');
+      if (!v('petName'))   fail('petName','Required');
+      if (!v('startDate')) fail('startDate','Required');
+      if (!v('startTime')) fail('startTime','Required');
+      if (!v('endDate'))   fail('endDate','Required');
+      if (!v('endTime'))   fail('endTime','Required');
+      if (ok) {
+        const s = new Date(v('startDate')+'T'+v('startTime'));
+        const e = new Date(v('endDate')+'T'+v('endTime'));
+        if (e <= s) { fail('endDate','Must be after check-in'); ok=false; }
+      }
+      return ok;
+    }
+
+    function submitRequest() {
+      if (!validate()) return;
+      const v = id => document.getElementById('f-'+id).value.trim();
+      const r = {
+        id: nextId(),
+        ownerName: v('ownerName'), phone: v('phone'), email: v('email'),
+        petName: v('petName'), breed: v('breed'), age: v('age'),
+        startDate: v('startDate'), startTime: v('startTime'),
+        endDate: v('endDate'), endTime: v('endTime'),
+        serviceType: v('service') || 'Standard Boarding',
+        numPets: v('numPets'),
+        instructions: v('instructions'),
+        emergencyContact: v('emergency'),
+        vet: v('vet'),
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+      requests.push(r);
+      save();
+      toast('Request ' + r.id + ' submitted!', 'success');
+      clearForm();
+      switchTabById('dashboard');
+    }
+
+    function clearForm() {
+      ['ownerName','phone','email','petName','breed','age','startDate','startTime','endDate','endTime','instructions','emergency','vet'].forEach(id=>{
+        const el = document.getElementById('f-'+id); if(el){el.value='';el.classList.remove('err');}
+      });
+      document.getElementById('f-service').value='';
+      document.getElementById('f-numPets').value='1';
+      ['ownerName','phone','petName','startDate','startTime','endDate','endTime'].forEach(id=>{
+        const e=document.getElementById('e-'+id); if(e) e.textContent='';
+      });
+    }
+
+    // ── Actions ──
+    function openCancel(id) {
+      cancelId = id;
+      const r = requests.find(x=>x.id===id);
+      document.getElementById('modal-cancel-body').textContent = `Cancel request ${id} for ${r.petName} (${r.ownerName})? This cannot be undone.`;
+      document.getElementById('modal-cancel').classList.add('open');
+    }
+    function confirmCancel() {
+      const r = requests.find(x=>x.id===cancelId);
+      if(r){ r.status='cancelled'; save(); renderDashboard(); toast('Request '+r.id+' cancelled.','danger'); }
+      closeModal('modal-cancel');
+    }
+    function setStatus(id, status) {
+      const r = requests.find(x=>x.id===id);
+      if(r){ r.status=status; save(); renderDashboard(); toast('Request '+id+' marked '+status+'.','success'); }
+    }
+    function viewDetail(id) {
+      const r = requests.find(x=>x.id===id);
+      if(!r) return;
+      document.getElementById('modal-detail-title').textContent = r.id + ' — ' + r.petName;
+      document.getElementById('modal-detail-badge').innerHTML = `<span class="badge badge-${r.status}">${cap(r.status)}</span>`;
+      document.getElementById('modal-detail-body').innerHTML = `
+        <div class="detail-grid">
+          <div class="detail-item"><div class="dk">Owner</div><div class="dv">${esc(r.ownerName)}</div></div>
+          <div class="detail-item"><div class="dk">Phone</div><div class="dv">${esc(r.phone)}</div></div>
+          <div class="detail-item"><div class="dk">Email</div><div class="dv">${esc(r.email)||'—'}</div></div>
+          <div class="detail-item"><div class="dk">Pet / Breed</div><div class="dv">${esc(r.petName)}${r.breed?' · '+esc(r.breed):''}</div></div>
+          <div class="detail-item"><div class="dk">Age</div><div class="dv">${esc(r.age)||'—'}</div></div>
+          <div class="detail-item"><div class="dk">Service</div><div class="dv">${esc(r.serviceType)}</div></div>
+          <div class="detail-item"><div class="dk">Check-in</div><div class="dv">${r.startDate} ${fmt12(r.startTime)}</div></div>
+          <div class="detail-item"><div class="dk">Check-out</div><div class="dv">${r.endDate} ${fmt12(r.endTime)}</div></div>
+          <div class="detail-item"><div class="dk">Emergency</div><div class="dv">${esc(r.emergencyContact)||'—'}</div></div>
+          <div class="detail-item"><div class="dk">Vet</div><div class="dv">${esc(r.vet)||'—'}</div></div>
+        </div>
+        ${r.instructions?`<div class="detail-instructions"><div class="dk">Special Instructions</div>${esc(r.instructions)}</div>`:''}
+      `;
+      document.getElementById('modal-detail').classList.add('open');
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); }));
+
+    // ── Helpers ──
+    function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function cap(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
+    function fmtDate(d) {
+      if(!d) return '—';
+      const dt = new Date(d+'T12:00:00');
+      return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    }
+    function fmt12(t) {
+      if(!t) return '';
+      const [h,m] = t.split(':').map(Number);
+      return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`;
+    }
+
+    // ── Toast ──
+    function toast(msg, type='info') {
+      const el = document.createElement('div');
+      el.className = `toast toast-${type}`;
+      el.textContent = msg;
+      document.getElementById('dd-toasts').appendChild(el);
+      setTimeout(() => el.remove(), 3500);
+    }
+
+    // ── Seed sample data ──
+    if (!requests.length) {
+      const today = new Date();
+      const fmt = d => d.toISOString().split('T')[0];
+      const add = (d,n) => { const x=new Date(d); x.setDate(x.getDate()+n); return x; };
+      requests = [
+        { id:'DD0001', ownerName:'Alex Johnson', phone:'(555) 123-4567', email:'alex@example.com', petName:'Max', breed:'Labrador', age:'4 years', startDate:fmt(today), startTime:'09:00', endDate:fmt(add(today,3)), endTime:'17:00', serviceType:'Standard Boarding', numPets:'1', instructions:'Feed twice daily. Loves tennis balls.', emergencyContact:'Sarah (555) 987-6543', vet:'City Vet Clinic', status:'active', createdAt:new Date().toISOString() },
+        { id:'DD0002', ownerName:'Maria Garcia', phone:'(555) 234-5678', email:'maria@example.com', petName:'Luna', breed:'Siamese Cat', age:'2 years', startDate:fmt(add(today,1)), startTime:'10:00', endDate:fmt(add(today,5)), endTime:'11:00', serviceType:'Luxury Suite', numPets:'1', instructions:'Shy around dogs — keep separated.', emergencyContact:'', vet:'Paws & Claws Vet', status:'pending', createdAt:new Date().toISOString() },
+        { id:'DD0003', ownerName:'Tom Wilson', phone:'(555) 345-6789', email:'', petName:'Bella', breed:'Poodle', age:'7 years', startDate:fmt(add(today,-5)), startTime:'08:30', endDate:fmt(add(today,-2)), endTime:'16:00', serviceType:'Standard Boarding', numPets:'1', instructions:'', emergencyContact:'Karen (555) 654-3210', vet:'', status:'completed', createdAt:new Date().toISOString() },
+      ];
+      save();
+    }
+
+    renderDashboard();
   </script>
 </body>
 </html>
