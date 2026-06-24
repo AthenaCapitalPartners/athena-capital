@@ -136,7 +136,7 @@
     .dd-hero-photos .ph {
       background-size: cover;
       background-position: center;
-      filter: saturate(0.8) brightness(0.55);
+      filter: saturate(0.75) brightness(0.42);
     }
     .ph-1 { background-image: url('https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&auto=format&fit=crop'); }
     .ph-2 { background-image: url('https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&auto=format&fit=crop'); }
@@ -148,7 +148,9 @@
     .dd-hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(10,25,47,.82) 0%, rgba(26,140,116,.55) 60%, rgba(245,158,11,.35) 100%);
+      background:
+        radial-gradient(ellipse at 50% 55%, rgba(26,140,116,.38) 0%, transparent 65%),
+        linear-gradient(180deg, rgba(10,25,47,.65) 0%, rgba(10,25,47,.72) 100%);
     }
     .dd-hero-content {
       position: relative;
@@ -182,16 +184,27 @@
       font-weight: 600;
       color: var(--white);
       line-height: 1.1;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 24px rgba(0,0,0,.45);
     }
-    .dd-hero h1 em { font-style: italic; color: var(--amber); }
+    .dd-hero h1 em { font-style: italic; color: var(--amber); text-shadow: 0 2px 20px rgba(245,158,11,.35); }
     .dd-hero-tagline {
       font-size: 17px;
-      color: rgba(255,255,255,.75);
-      line-height: 1.7;
+      color: rgba(255,255,255,.82);
+      line-height: 1.75;
       margin-bottom: 40px;
-      font-weight: 500;
+      font-weight: 600;
+      text-shadow: 0 1px 8px rgba(0,0,0,.4);
     }
+
+    /* entrance animations */
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+    .dd-hero-pill    { animation: fadeUp .6s ease both; animation-delay: .1s; }
+    .dd-hero h1      { animation: fadeUp .7s ease both; animation-delay: .25s; }
+    .dd-hero-tagline { animation: fadeUp .7s ease both; animation-delay: .4s; }
+    .dd-hero-cta     { animation: fadeUp .7s ease both; animation-delay: .55s; }
+    .dd-hero-trust   { animation: fadeIn .8s ease both; animation-delay: .75s; }
     .dd-hero-cta {
       display: flex;
       gap: 12px;
@@ -267,6 +280,16 @@
     .dd-hero-scroll svg { width: 20px; height: 20px; }
     @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
 
+    /* ───── WAVE DIVIDER ───── */
+    .dd-wave {
+      display: block;
+      width: 100%;
+      background: var(--white);
+      margin-top: -2px;
+      line-height: 0;
+    }
+    .dd-wave svg { display: block; width: 100%; }
+
     /* ───── FEATURES STRIP ───── */
     .dd-features {
       background: var(--white);
@@ -281,25 +304,29 @@
       gap: 0;
     }
     .feature-item {
-      padding: 28px 24px;
+      padding: 32px 28px;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
       border-right: 1px solid var(--gray-100);
+      transition: background var(--trans);
     }
+    .feature-item:hover { background: var(--gray-50); }
     .feature-item:last-child { border-right: none; }
     .feature-icon {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      background: var(--teal-light);
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--teal-light) 0%, rgba(26,140,116,.12) 100%);
+      border: 1.5px solid rgba(26,140,116,.15);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      font-size: 20px;
+      font-size: 24px;
+      box-shadow: 0 2px 8px rgba(26,140,116,.1);
     }
-    .feature-text strong { display: block; font-size: 14px; font-weight: 800; color: var(--gray-900); }
-    .feature-text span { font-size: 12.5px; color: var(--gray-500); }
+    .feature-text strong { display: block; font-size: 14.5px; font-weight: 800; color: var(--gray-900); margin-bottom: 3px; }
+    .feature-text span { font-size: 12.5px; color: var(--gray-500); font-weight: 600; }
 
     /* ───── APP SECTION ───── */
     .dd-app { background: var(--warm); padding: 48px 0 72px; }
@@ -393,7 +420,11 @@
       overflow: hidden;
       transition: all var(--trans);
     }
-    .req-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); border-color: var(--gray-200); }
+    .req-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); border-color: var(--gray-200); }
+    .req-card.s-pending  { border-left: 4px solid var(--amber); }
+    .req-card.s-active   { border-left: 4px solid var(--teal); }
+    .req-card.s-completed{ border-left: 4px solid #059669; }
+    .req-card.s-cancelled{ border-left: 4px solid var(--coral); }
     .req-card-body {
       padding: 16px 18px;
       display: flex;
@@ -845,6 +876,11 @@
     </div>
   </section>
 
+  <!-- ── Wave ── -->
+  <div class="dd-wave">
+    <svg viewBox="0 0 1440 64" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" height="64"><path d="M0,32 C240,64 480,0 720,32 C960,64 1200,0 1440,32 L1440,64 L0,64 Z" fill="#ffffff"/></svg>
+  </div>
+
   <!-- ── Feature strip ── -->
   <div class="dd-features">
     <div class="dd-features-inner">
@@ -1146,7 +1182,7 @@
       if(!filtered.length){list.innerHTML='';emp.style.display='';return;}
       emp.style.display='none';
       list.innerHTML=filtered.map(r=>`
-        <div class="req-card">
+        <div class="req-card s-${r.status}">
           <div class="req-card-body">
             <div class="req-ava">${petEmoji(r.breed)}</div>
             <div class="req-info">
