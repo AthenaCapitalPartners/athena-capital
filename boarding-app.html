@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boarding Request</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --primary-light: #eef2ff;
+      --success: #059669;
+      --success-light: #d1fae5;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --radius: 10px;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,.08), 0 2px 4px -2px rgba(0,0,0,.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.08), 0 4px 6px -4px rgba(0,0,0,.04);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-800);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: #fff;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--primary);
+    }
+    .nav-brand svg { width: 28px; height: 28px; }
+    .nav-tabs { display: flex; gap: 4px; }
+    .nav-tab {
+      padding: 6px 16px;
+      border-radius: 8px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-600);
+      transition: all .15s;
+    }
+    .nav-tab:hover { background: var(--gray-100); color: var(--gray-800); }
+    .nav-tab.active { background: var(--primary-light); color: var(--primary); }
+
+    /* PAGES */
+    .page { display: none; max-width: 900px; margin: 0 auto; padding: 28px 20px; }
+    .page.active { display: block; }
+
+    /* DASHBOARD */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .stat-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--gray-500); }
+    .stat-value { font-size: 30px; font-weight: 700; color: var(--gray-800); }
+    .stat-card.stat-active .stat-value { color: var(--primary); }
+    .stat-card.stat-done .stat-value { color: var(--success); }
+    .stat-card.stat-cancelled .stat-value { color: var(--danger); }
+    .stat-card.stat-pending .stat-value { color: var(--warning); }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .section-title { font-size: 16px; font-weight: 700; color: var(--gray-800); }
+
+    /* TABLE */
+    .table-wrap {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead { background: var(--gray-50); }
+    th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--gray-500);
+      border-bottom: 1px solid var(--gray-200);
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-700);
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--gray-50); }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--gray-400);
+    }
+    .empty-state svg { width: 48px; height: 48px; margin-bottom: 12px; opacity: .4; }
+    .empty-state p { font-size: 14px; }
+
+    /* BADGE */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-pending  { background: var(--warning-light);  color: var(--warning); }
+    .badge-active   { background: var(--primary-light);  color: var(--primary); }
+    .badge-completed{ background: var(--success-light);  color: var(--success); }
+    .badge-cancelled{ background: var(--danger-light);   color: var(--danger); }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all .15s;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-outline {
+      background: #fff;
+      color: var(--gray-700);
+      border: 1.5px solid var(--gray-300);
+    }
+    .btn-outline:hover { background: var(--gray-50); border-color: var(--gray-400); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn-sm { padding: 4px 10px; font-size: 12.5px; border-radius: 6px; }
+
+    /* FORM */
+    .form-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: 28px;
+    }
+    .form-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 4px;
+    }
+    .form-subtitle {
+      font-size: 14px;
+      color: var(--gray-500);
+      margin-bottom: 24px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-row.single { grid-template-columns: 1fr; }
+    .form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 600px) {
+      .form-row, .form-row.triple { grid-template-columns: 1fr; }
+    }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+    label span.req { color: var(--danger); margin-left: 2px; }
+    input, select, textarea {
+      border: 1.5px solid var(--gray-300);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 14px;
+      color: var(--gray-800);
+      transition: border-color .15s, box-shadow .15s;
+      outline: none;
+      background: #fff;
+      font-family: inherit;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79,70,229,.12);
+    }
+    input.error, select.error, textarea.error { border-color: var(--danger); }
+    .field-error { font-size: 12px; color: var(--danger); margin-top: 2px; }
+    textarea { resize: vertical; min-height: 90px; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--gray-200);
+      margin: 20px 0;
+    }
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--gray-400);
+      margin-bottom: 12px;
+    }
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    /* TOAST */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toast {
+      background: var(--gray-800);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      animation: slideIn .25s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 320px;
+    }
+    .toast.success { background: var(--success); }
+    .toast.danger  { background: var(--danger); }
+    @keyframes slideIn {
+      from { transform: translateX(40px); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px;
+      width: min(440px, 94vw);
+      box-shadow: var(--shadow-lg);
+      animation: popIn .2s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(.93); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .modal-title { font-size: 18px; font-weight: 700; color: var(--gray-800); margin-bottom: 8px; }
+    .modal-body  { font-size: 14px; color: var(--gray-600); margin-bottom: 22px; line-height: 1.6; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+    /* DETAIL PANEL */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+      margin-bottom: 12px;
+    }
+    .detail-item { font-size: 13.5px; }
+    .detail-item .dk { font-weight: 600; color: var(--gray-500); font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; }
+    .detail-item .dv { color: var(--gray-800); margin-top: 2px; }
+
+    /* FILTER BAR */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 5px 12px;
+      border-radius: 99px;
+      border: 1.5px solid var(--gray-300);
+      background: #fff;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .filter-btn.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    BoardingHub
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('dashboard')">Dashboard</button>
+    <button class="nav-tab" onclick="showPage('new-request')">New Request</button>
+  </div>
+</nav>
+
+<!-- DASHBOARD PAGE -->
+<div id="page-dashboard" class="page active">
+  <div class="stats-grid" id="stats-grid"></div>
+
+  <div class="section-header">
+    <span class="section-title">Boarding Requests</span>
+    <button class="btn btn-primary btn-sm" onclick="showPage('new-request')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Request
+    </button>
+  </div>
+
+  <div class="filter-bar" id="filter-bar">
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+    <button class="filter-btn" data-filter="pending"   onclick="setFilter('pending', this)">Pending</button>
+    <button class="filter-btn" data-filter="active"    onclick="setFilter('active', this)">Active</button>
+    <button class="filter-btn" data-filter="completed" onclick="setFilter('completed', this)">Completed</button>
+    <button class="filter-btn" data-filter="cancelled" onclick="setFilter('cancelled', this)">Cancelled</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Pet / Owner</th>
+          <th>Check-in</th>
+          <th>Check-out</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="requests-tbody"></tbody>
+    </table>
+    <div id="empty-state" class="empty-state" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="2" y="7" width="20" height="14" rx="2"/>
+        <path d="M16 7V5a2 2 0 0 0-4 0v2M8 7V5a2 2 0 0 0-4 0v2"/>
+      </svg>
+      <p>No boarding requests found.</p>
+    </div>
+  </div>
+</div>
+
+<!-- NEW REQUEST PAGE -->
+<div id="page-new-request" class="page">
+  <div class="form-card">
+    <div class="form-title">New Boarding Request</div>
+    <div class="form-subtitle">Fill in the details below to submit a boarding request.</div>
+
+    <div class="section-label">Owner Information</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Owner Name <span class="req">*</span></label>
+        <input type="text" id="ownerName" placeholder="Jane Smith" />
+        <span class="field-error" id="err-ownerName"></span>
+      </div>
+      <div class="form-group">
+        <label>Phone Number <span class="req">*</span></label>
+        <input type="tel" id="phone" placeholder="(555) 000-0000" />
+        <span class="field-error" id="err-phone"></span>
+      </div>
+    </div>
+    <div class="form-row single">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="jane@example.com" />
+      </div>
+    </div>
+
+    <hr class="divider" />
+    <div class="section-label">Pet Information</div>
+    <div class="form-row triple">
+      <div class="form-group">
+        <label>Pet Name <span class="req">*</span></label>
+        <input type="text" id="petName" placeholder="Buddy" />
+        <span class="field-error" id="err-petName"></span>
+      </div>
+      <div class="form-group">
+        <label>Breed / Species</label>
+        <input type="text" id="breed" placeholder="Golden Retriever" />
+      </div>
+      <div class="form-group">
+        <label>Age</label>
+        <input type="text" id="age" placeholder="3 years" />
+      </div>
+    </div>
+
+    <hr class="divider" />
+    <div class="section-label">Boarding Schedule</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Check-in Date <span class="req">*</span></label>
+        <input type="date" id="startDate" />
+        <span class="field-error" id="err-startDate"></span>
+      </div>
+      <div class="form-group">
+        <label>Check-in Time <span class="req">*</span></label>
+        <input type="time" id="startTime" />
+        <span class="field-error" id="err-startTime"></span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Check-out Date <span class="req">*</span></label>
+        <input type="date" id="endDate" />
+        <span class="field-error" id="err-endDate"></span>
+      </div>
+      <div class="form-group">
+        <label>Check-out Time <span class="req">*</span></label>
+        <input type="time" id="endTime" />
+        <span class="field-error" id="err-endTime"></span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Service Type</label>
+        <select id="serviceType">
+          <option value="">Select a service</option>
+          <option value="Standard Boarding">Standard Boarding</option>
+          <option value="Luxury Suite">Luxury Suite</option>
+          <option value="Day Care Only">Day Care Only</option>
+          <option value="Overnight Stay">Overnight Stay</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Number of Pets</label>
+        <select id="numPets">
+          <option value="1">1 Pet</option>
+          <option value="2">2 Pets</option>
+          <option value="3">3 Pets</option>
+          <option value="4+">4+ Pets</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="divider" />
+    <div class="section-label">Care Instructions</div>
+    <div class="form-row single">
+      <div class="form-group">
+        <label>Special Instructions</label>
+        <textarea id="instructions" placeholder="e.g. Feeding schedule, medications, behavioral notes, allergies…"></textarea>
+      </div>
+    </div>
+    <div class="form-row single">
+      <div class="form-group">
+        <label>Emergency Contact</label>
+        <input type="text" id="emergencyContact" placeholder="Name and phone number" />
+      </div>
+    </div>
+    <div class="form-row single">
+      <div class="form-group">
+        <label>Veterinarian</label>
+        <input type="text" id="vet" placeholder="Clinic name and phone number" />
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="resetForm()">Clear</button>
+      <button class="btn btn-primary" onclick="submitRequest()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Submit Request
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CANCEL CONFIRM MODAL -->
+<div class="modal-overlay" id="cancelModal">
+  <div class="modal">
+    <div class="modal-title">Cancel Boarding Request</div>
+    <div class="modal-body" id="cancelModalBody">Are you sure you want to cancel this boarding request? This action cannot be undone.</div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('cancelModal')">Keep Request</button>
+      <button class="btn btn-danger" onclick="confirmCancel()">Yes, Cancel It</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" style="width:min(560px,94vw)">
+    <div class="modal-title" id="detailTitle"></div>
+    <div id="detailContent" style="margin-bottom:20px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('detailModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+  let requests = JSON.parse(localStorage.getItem('boardingRequests') || '[]');
+  let cancelTargetId = null;
+  let currentFilter = 'all';
+
+  function save() {
+    localStorage.setItem('boardingRequests', JSON.stringify(requests));
+  }
+
+  function nextId() {
+    const max = requests.reduce((m, r) => Math.max(m, parseInt(r.id.replace('BR', ''))), 0);
+    return 'BR' + String(max + 1).padStart(4, '0');
+  }
+
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.nav-tab').forEach(t => {
+      if (t.textContent.toLowerCase().includes(page.replace('-', ' ').split(' ')[0])) t.classList.add('active');
+    });
+    if (page === 'dashboard') renderDashboard();
+  }
+
+  function setFilter(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+  }
+
+  function renderDashboard() {
+    renderStats();
+    renderTable();
+  }
+
+  function renderStats() {
+    const total = requests.length;
+    const pending   = requests.filter(r => r.status === 'pending').length;
+    const active    = requests.filter(r => r.status === 'active').length;
+    const completed = requests.filter(r => r.status === 'completed').length;
+    const cancelled = requests.filter(r => r.status === 'cancelled').length;
+    document.getElementById('stats-grid').innerHTML = `
+      <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value">${total}</div></div>
+      <div class="stat-card stat-pending"><div class="stat-label">Pending</div><div class="stat-value">${pending}</div></div>
+      <div class="stat-card stat-active"><div class="stat-label">Active</div><div class="stat-value">${active}</div></div>
+      <div class="stat-card stat-done"><div class="stat-label">Completed</div><div class="stat-value">${completed}</div></div>
+      <div class="stat-card stat-cancelled"><div class="stat-label">Cancelled</div><div class="stat-value">${cancelled}</div></div>
+    `;
+  }
+
+  function renderTable() {
+    const filtered = currentFilter === 'all' ? requests : requests.filter(r => r.status === currentFilter);
+    const tbody = document.getElementById('requests-tbody');
+    const empty = document.getElementById('empty-state');
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = '';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = [...filtered].reverse().map(r => `
+      <tr>
+        <td><code style="font-size:12px;color:var(--primary)">${r.id}</code></td>
+        <td>
+          <div style="font-weight:600;color:var(--gray-800)">${esc(r.petName)}</div>
+          <div style="font-size:12px;color:var(--gray-400)">${esc(r.ownerName)}</div>
+        </td>
+        <td>${fmtDateTime(r.startDate, r.startTime)}</td>
+        <td>${fmtDateTime(r.endDate, r.endTime)}</td>
+        <td><span class="badge badge-${r.status}">${capitalize(r.status)}</span></td>
+        <td>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn btn-outline btn-sm" onclick="viewDetail('${r.id}')">View</button>
+            ${r.status !== 'cancelled' && r.status !== 'completed'
+              ? `<button class="btn btn-danger btn-sm" onclick="openCancelModal('${r.id}')">Cancel</button>`
+              : ''}
+            ${r.status === 'pending'
+              ? `<button class="btn btn-sm" style="background:var(--success);color:#fff" onclick="markActive('${r.id}')">Activate</button>`
+              : ''}
+            ${r.status === 'active'
+              ? `<button class="btn btn-sm" style="background:var(--success);color:#fff" onclick="markComplete('${r.id}')">Complete</button>`
+              : ''}
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function fmtDateTime(date, time) {
+    if (!date) return '—';
+    const d = new Date(date + 'T12:00:00');
+    const ds = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `<div>${ds}</div><div style="font-size:12px;color:var(--gray-400)">${fmt12(time)}</div>`;
+  }
+
+  function fmt12(t) {
+    if (!t) return '';
+    const [h, m] = t.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    return `${h % 12 || 12}:${String(m).padStart(2,'0')} ${ampm}`;
+  }
+
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function esc(s) { return (s || '').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function validate() {
+    const fields = ['ownerName','phone','petName','startDate','startTime','endDate','endTime'];
+    let ok = true;
+    fields.forEach(f => {
+      const el = document.getElementById(f);
+      const err = document.getElementById('err-' + f);
+      if (err) err.textContent = '';
+      el && el.classList.remove('error');
+    });
+
+    const get = id => document.getElementById(id).value.trim();
+
+    const check = (id, msg) => {
+      if (!get(id)) {
+        document.getElementById(id).classList.add('error');
+        document.getElementById('err-' + id).textContent = msg;
+        ok = false;
+      }
+    };
+    check('ownerName', 'Owner name is required.');
+    check('phone', 'Phone number is required.');
+    check('petName', 'Pet name is required.');
+    check('startDate', 'Check-in date is required.');
+    check('startTime', 'Check-in time is required.');
+    check('endDate', 'Check-out date is required.');
+    check('endTime', 'Check-out time is required.');
+
+    if (ok) {
+      const start = new Date(get('startDate') + 'T' + get('startTime'));
+      const end   = new Date(get('endDate')   + 'T' + get('endTime'));
+      if (end <= start) {
+        document.getElementById('endDate').classList.add('error');
+        document.getElementById('err-endDate').textContent = 'Check-out must be after check-in.';
+        ok = false;
+      }
+    }
+    return ok;
+  }
+
+  function submitRequest() {
+    if (!validate()) return;
+    const get = id => document.getElementById(id).value.trim();
+    const req = {
+      id: nextId(),
+      ownerName:        get('ownerName'),
+      phone:            get('phone'),
+      email:            get('email'),
+      petName:          get('petName'),
+      breed:            get('breed'),
+      age:              get('age'),
+      startDate:        get('startDate'),
+      startTime:        get('startTime'),
+      endDate:          get('endDate'),
+      endTime:          get('endTime'),
+      serviceType:      get('serviceType') || 'Standard Boarding',
+      numPets:          get('numPets'),
+      instructions:     get('instructions'),
+      emergencyContact: get('emergencyContact'),
+      vet:              get('vet'),
+      status:           'pending',
+      createdAt:        new Date().toISOString(),
+    };
+    requests.push(req);
+    save();
+    toast('Request ' + req.id + ' submitted!', 'success');
+    resetForm();
+    showPage('dashboard');
+  }
+
+  function resetForm() {
+    ['ownerName','phone','email','petName','breed','age','startDate','startTime',
+     'endDate','endTime','serviceType','numPets','instructions','emergencyContact','vet']
+      .forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.value = ''; el.classList.remove('error'); }
+      });
+    ['ownerName','phone','petName','startDate','startTime','endDate','endTime']
+      .forEach(id => { const e = document.getElementById('err-'+id); if(e) e.textContent=''; });
+  }
+
+  function openCancelModal(id) {
+    cancelTargetId = id;
+    const r = requests.find(x => x.id === id);
+    document.getElementById('cancelModalBody').textContent =
+      `Cancel boarding request ${id} for ${r.petName} (${r.ownerName})? This cannot be undone.`;
+    document.getElementById('cancelModal').classList.add('open');
+  }
+
+  function confirmCancel() {
+    const r = requests.find(x => x.id === cancelTargetId);
+    if (r) { r.status = 'cancelled'; save(); renderDashboard(); toast('Request ' + r.id + ' cancelled.', 'danger'); }
+    closeModal('cancelModal');
+  }
+
+  function markActive(id) {
+    const r = requests.find(x => x.id === id);
+    if (r) { r.status = 'active'; save(); renderDashboard(); toast('Request ' + id + ' is now active.', 'success'); }
+  }
+
+  function markComplete(id) {
+    const r = requests.find(x => x.id === id);
+    if (r) { r.status = 'completed'; save(); renderDashboard(); toast('Request ' + id + ' completed.', 'success'); }
+  }
+
+  function viewDetail(id) {
+    const r = requests.find(x => x.id === id);
+    if (!r) return;
+    document.getElementById('detailTitle').textContent = r.id + ' — ' + r.petName;
+    document.getElementById('detailContent').innerHTML = `
+      <div style="margin-bottom:8px"><span class="badge badge-${r.status}">${capitalize(r.status)}</span></div>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="dk">Owner</div><div class="dv">${esc(r.ownerName)}</div></div>
+        <div class="detail-item"><div class="dk">Phone</div><div class="dv">${esc(r.phone)}</div></div>
+        <div class="detail-item"><div class="dk">Email</div><div class="dv">${esc(r.email)||'—'}</div></div>
+        <div class="detail-item"><div class="dk">Pet</div><div class="dv">${esc(r.petName)}${r.breed?' ('+esc(r.breed)+')':''}</div></div>
+        <div class="detail-item"><div class="dk">Age</div><div class="dv">${esc(r.age)||'—'}</div></div>
+        <div class="detail-item"><div class="dk">Service</div><div class="dv">${esc(r.serviceType)}</div></div>
+        <div class="detail-item"><div class="dk">Check-in</div><div class="dv">${r.startDate} ${fmt12(r.startTime)}</div></div>
+        <div class="detail-item"><div class="dk">Check-out</div><div class="dv">${r.endDate} ${fmt12(r.endTime)}</div></div>
+        <div class="detail-item"><div class="dk">Emergency</div><div class="dv">${esc(r.emergencyContact)||'—'}</div></div>
+        <div class="detail-item"><div class="dk">Vet</div><div class="dv">${esc(r.vet)||'—'}</div></div>
+      </div>
+      ${r.instructions ? `<div style="margin-top:10px"><div class="dk" style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-400)">Special Instructions</div><div style="margin-top:6px;font-size:13.5px;color:var(--gray-700);background:var(--gray-50);border-radius:8px;padding:10px 12px;line-height:1.6">${esc(r.instructions)}</div></div>` : ''}
+    `;
+    document.getElementById('detailModal').classList.add('open');
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+
+  // close modal on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+  });
+
+  function toast(msg, type = '') {
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    t.textContent = msg;
+    document.getElementById('toast-container').appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  }
+
+  // seed sample data if empty
+  if (requests.length === 0) {
+    const today = new Date();
+    const fmt = d => d.toISOString().split('T')[0];
+    const add = (d, n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+    requests = [
+      { id:'BR0001', ownerName:'Alex Johnson', phone:'(555) 123-4567', email:'alex@example.com', petName:'Max', breed:'Labrador', age:'4 years', startDate:fmt(today), startTime:'09:00', endDate:fmt(add(today,3)), endTime:'17:00', serviceType:'Standard Boarding', numPets:'1', instructions:'Feed twice daily. Loves tennis balls.', emergencyContact:'Sarah Johnson (555) 987-6543', vet:'City Vet Clinic', status:'active', createdAt:new Date().toISOString() },
+      { id:'BR0002', ownerName:'Maria Garcia', phone:'(555) 234-5678', email:'maria@example.com', petName:'Luna', breed:'Siamese Cat', age:'2 years', startDate:fmt(add(today,1)), startTime:'10:00', endDate:fmt(add(today,5)), endTime:'11:00', serviceType:'Luxury Suite', numPets:'1', instructions:'Shy around dogs. Keep separated.', emergencyContact:'', vet:'Paws & Claws Vet', status:'pending', createdAt:new Date().toISOString() },
+      { id:'BR0003', ownerName:'Tom Wilson', phone:'(555) 345-6789', email:'', petName:'Bella', breed:'Poodle', age:'7 years', startDate:fmt(add(today,-5)), startTime:'08:30', endDate:fmt(add(today,-2)), endTime:'16:00', serviceType:'Standard Boarding', numPets:'1', instructions:'', emergencyContact:'Karen Wilson (555) 654-3210', vet:'', status:'completed', createdAt:new Date().toISOString() },
+    ];
+    save();
+  }
+
+  renderDashboard();
+</script>
+</body>
+</html>

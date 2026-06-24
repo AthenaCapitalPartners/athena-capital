@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com; form-action https://formsubmit.co; frame-src 'self'; frame-ancestors 'none';">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <title>Doggie Den — Pet Boarding | Athena Capital Partners LLC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .doggie-hero {
+      background: var(--navy);
+      padding: 120px 0 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .doggie-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, rgba(197,160,89,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .doggie-hero .hero-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .doggie-hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .doggie-hero p {
+      font-size: 16px;
+      color: rgba(255,255,255,.65);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+    .doggie-paw {
+      font-size: 28px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .boarding-frame-section {
+      background: #f4f3f0;
+      padding: 0 0 60px;
+    }
+    .boarding-frame-wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .boarding-iframe {
+      width: 100%;
+      height: 100vh;
+      min-height: 700px;
+      border: none;
+      border-radius: 0 0 12px 12px;
+      display: block;
+      background: #fff;
+      box-shadow: 0 8px 40px rgba(10,25,47,.10);
+    }
+    .frame-header {
+      background: var(--gold);
+      border-radius: 12px 12px 0 0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .frame-header span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: .3px;
+    }
+    .frame-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(10,25,47,.25);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <span class="logo-mark">ATHENA</span>
+        <span class="logo-text">Capital Partners</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About Us</a></li>
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="index.html#capabilities">Capabilities</a></li>
+        <li><a href="doggieden.html" class="active">Doggie Den</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="doggie-hero">
+    <div class="container">
+      <span class="doggie-paw">🐾</span>
+      <p class="hero-tag">Pet Boarding &bull; Las Vegas, NV</p>
+      <h1>Doggie Den</h1>
+      <p>Premium pet boarding with the care and attention your furry family members deserve. Submit a boarding request below — check-in, check-out, and full care instructions all in one place.</p>
+    </div>
+  </section>
+
+  <!-- Embedded Boarding App -->
+  <section class="boarding-frame-section">
+    <div class="boarding-frame-wrap">
+      <div class="frame-header">
+        <div class="frame-dot"></div>
+        <div class="frame-dot"></div>
+        <div class="frame-dot"></div>
+        <span>BoardingHub — Pet Boarding Requests</span>
+      </div>
+      <iframe
+        src="boarding-app.html"
+        class="boarding-iframe"
+        title="Doggie Den Boarding Request System"
+        loading="lazy"
+      ></iframe>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <span class="logo-mark">ATHENA</span>
+            <span class="logo-text">Capital Partners</span>
+          </a>
+          <p>Professional services for federal agencies. Small business. Big capability. Las Vegas, NV.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Company</h4>
+            <a href="index.html#about">About Us</a>
+            <a href="index.html#services">Services</a>
+            <a href="index.html#capabilities">How We Work</a>
+            <a href="index.html#contact">Contact</a>
+          </div>
+          <div class="footer-col">
+            <h4>Services</h4>
+            <a href="index.html#services">Administrative Support</a>
+            <a href="index.html#services">Writing & Translation</a>
+            <a href="index.html#services">Graphic Design</a>
+            <a href="index.html#services">IT & Office Supplies</a>
+          </div>
+          <div class="footer-col">
+            <h4>Resources</h4>
+            <a href="doggieden.html">Doggie Den</a>
+            <a href="#">Capability Statement</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="#" id="footerCookieSettings">Cookie Settings</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Athena Capital Partners LLC. All rights reserved.</p>
+        <p class="disclaimer">Athena Capital Partners LLC is a registered limited liability company in the State of Nevada. Registered on SAM.gov for federal procurement.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cookie Consent Banner -->
+  <div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-banner-inner">
+      <p>We use cookies to analyze website traffic and improve your experience. No personally identifiable information is collected. <a href="privacy.html">Privacy Policy</a></p>
+      <div class="cookie-banner-actions">
+        <button class="cookie-btn cookie-btn-decline" id="cookieDecline">Decline</button>
+        <button class="cookie-btn cookie-btn-accept" id="cookieAccept">Accept</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Resize iframe to fit its content
+    const iframe = document.querySelector('.boarding-iframe');
+    function resizeIframe() {
+      try {
+        const h = iframe.contentWindow.document.body.scrollHeight;
+        if (h > 600) iframe.style.height = h + 'px';
+      } catch(e) {}
+    }
+    iframe.addEventListener('load', resizeIframe);
+    window.addEventListener('resize', resizeIframe);
+  </script>
+</body>
+</html>
